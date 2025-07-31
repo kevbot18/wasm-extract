@@ -20,11 +20,15 @@ const extractText = (filename, buffer) => exports.ExtractUtil.ExtractText(filena
 document.getElementById('extract').addEventListener('click', e => {
     let fileInput = document.getElementById('doc');
     let name = fileInput.files[0].name;
-    fileInput.files[0].bytes().then(array => {
+    let reader = new FileReader();
+    reader.onloadend = (e) => {
+        let array = new Uint8Array(e.target.result);
         let result = extractText(name, array);
         console.log(result);
         document.getElementById('extracted').innerText = result;
-    });
+    };
+    reader.readAsArrayBuffer(fileInput.files[0]);
+    
     e.preventDefault();
 });
 
