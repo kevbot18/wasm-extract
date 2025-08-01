@@ -1,7 +1,10 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UglyToad.PdfPig;
+using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.TextExtractor;
+using UglyToad.PdfPig.DocumentLayoutAnalysis.WordExtractor;
 
 namespace extract;
 
@@ -12,8 +15,13 @@ static class PdfExtract
         using var extractor = PdfDocument.Open(content);
 
         var text = string.Join("\n\n",
-            extractor.GetPages().Select(page => ContentOrderTextExtractor.GetText(page)));
+            extractor.GetPages().Select(GetPageText));
 
         return text;
+    }
+
+    private static string GetPageText(Page page)
+    {
+        return ContentOrderTextExtractor.GetText(page, true);
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Mammoth;
 
@@ -10,6 +11,6 @@ internal static class DocxExtract
         var converter = new DocumentConverter();
         var html = converter.ConvertToHtml(content);
 
-        return HtmlToMd.Convert(html.Value);
+        return Html2Md.Convert(html.Value);
     }
 }

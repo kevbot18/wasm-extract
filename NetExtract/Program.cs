@@ -7,19 +7,13 @@ Console.WriteLine("Started");
 
 partial class ExtractUtil
 {
-    [JSImport("dom.setStatus", "main.js")]
-    internal static partial void SetStatus(string status);
-
     [JSExport]
     internal static string ExtractText(string filename, byte[] content)
     {
         if (content.Length == 0)
         {
-            SetStatus("Complete, Empty Input");
             return "";
         }
-        
-        SetStatus("Processing...");
         
         var stream = new BinaryData(content).ToStream();
 
@@ -38,7 +32,7 @@ partial class ExtractUtil
         if (filename.EndsWith(".html"))
         {
             using var reader = new StreamReader(stream);
-            return HtmlToMd.Convert(reader.ReadToEnd());
+            return Html2Md.Convert(reader.ReadToEnd());
         }
         
         // else treat as plain text

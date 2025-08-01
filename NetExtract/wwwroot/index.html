@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<!--  Licensed to the .NET Foundation under one or more agreements. -->
+<!-- The .NET Foundation licenses this file to you under the MIT license. -->
+<html lang="en">
+
+<head>
+  <title>extract</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="wasm_exec.js"></script>
+  <script>
+    if (!WebAssembly.instantiateStreaming) { // polyfill
+      WebAssembly.instantiateStreaming = async (resp, importObject) => {
+        const source = await (await resp).arrayBuffer();
+        return await WebAssembly.instantiate(source, importObject);
+      };
+    }
+
+    const go = new Go();
+    let mod, inst;
+    WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then(async (result) => {
+      mod = result.module;
+      inst = result.instance;
+      await go.run(inst);
+    }).catch((err) => {
+      console.error(err);
+    });
+  </script>
+  <script type='module' src="./main.js"></script>
+</head>
+
+<body>
+  <h1>Extractor</h1>
+  <p>
+    Status is: <span id="status"><i>Idle</i></span>
+  </p>
+  <div>
+    <input type="file" name="doc" id="doc" />
+    
+    <button id="extract">Extract</button>
+    
+    <div id="extracted"></div>
+  </div>
+</body>
+
+</html>
