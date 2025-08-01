@@ -9,6 +9,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="wasm_exec.js"></script>
   <script>
+    (() => {
+      let remaining = 2;
+      addEventListener("wasm-load", _ => {
+        remaining -= 1;
+        if (remaining == 0) {
+          document.getElementById('extract').disabled = false;
+          document.getElementById('status').innerText = 'Idle';
+        }
+      }, false)
+    })();
+
     if (!WebAssembly.instantiateStreaming) { // polyfill
       WebAssembly.instantiateStreaming = async (resp, importObject) => {
         const source = await (await resp).arrayBuffer();
@@ -21,6 +32,7 @@
     WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then(async (result) => {
       mod = result.module;
       inst = result.instance;
+      dispatchEvent(new Event('wasm-load'));
       await go.run(inst);
     }).catch((err) => {
       console.error(err);
@@ -32,13 +44,13 @@
 <body>
   <h1>Extractor</h1>
   <p>
-    Status is: <span id="status">Idle</span>
+    Status is: <span id="status">Loading</span>
   </p>
   <div>
     <input type="file" name="doc" id="doc" />
-    
-    <button id="extract">Extract</button>
-    
+
+    <button id="extract" disabled>Extract</button>
+
     <pre style="display: flex;"><textarea rows="30" style="width: 100%;" id="extracted"></textarea></pre>
   </div>
 </body>

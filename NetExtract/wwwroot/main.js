@@ -15,18 +15,23 @@ const exports = await getAssemblyExports(config.mainAssemblyName);
 
 const extractText = (filename, buffer) => exports.ExtractUtil.ExtractText(filename, buffer);
 
-document.getElementById('extract').addEventListener('click', e => {
+const btn = document.getElementById('extract');
+
+btn.addEventListener('click', e => {
     let statusElem = document.getElementById('status');
-    statusElem.innerText = 'Running';
     let start = performance.now();
     let fileInput = document.getElementById('doc');
-    let name = fileInput.files[0].name;
+    if (fileInput.files.length == 0) {
+        statusElem.innerText = 'Missing File';
+        return;
+    }
+    let file = fileInput.files[0];
     let reader = new FileReader();
-    reader.onloadend = (e) => {
-        let array = new Uint8Array(e.target.result);
+    reader.onloadend = (load) => {
+        let array = new Uint8Array(load.target.result);
         let status = "Unknown";
         try {
-            let result = extractText(name, array);
+            let result = extractText(file.name, array);
             document.getElementById('extracted').value = result;
             status = "Success";
         } catch (error) {
@@ -34,13 +39,18 @@ document.getElementById('extract').addEventListener('click', e => {
             status = "Error";
         } finally {
             let end = performance.now();
-            statusElem.innerText = `${status} (${end-start}ms)`;
+            statusElem.innerText = `${status} (${end - start}ms)`;
+            btn.disabled = false;
         }
     };
-    reader.readAsArrayBuffer(fileInput.files[0]);
-    
+    statusElem.innerText = 'Running';
+    btn.disabled = true;
+    reader.readAsArrayBuffer(file);
+
     e.preventDefault();
 });
+
+dispatchEvent(new Event("wasm-load"));
 
 // run the C# Main() method and keep the runtime process running and executing further API calls
 await runMain();
