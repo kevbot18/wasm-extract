@@ -1,14 +1,12 @@
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.TextExtractor;
-using UglyToad.PdfPig.DocumentLayoutAnalysis.WordExtractor;
 
 namespace extract;
 
-static class PdfExtract
+internal static class PdfExtract
 {
     internal static string Extract(Stream content)
     {

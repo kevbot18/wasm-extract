@@ -4,6 +4,8 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Nullable>enable</Nullable>
     <PublishTrimmed>true</PublishTrimmed>
+    <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
+    <CompressionEnabled>false</CompressionEnabled>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
@@ -13,7 +15,7 @@
     <PackageReference Include="XlsxToHtmlConverter" Version="1.2.21" />
   </ItemGroup>
   
-  <PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <RunAOTCompilation>true</RunAOTCompilation>
   </PropertyGroup>
 </Project>
