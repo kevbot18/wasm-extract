@@ -1,3 +1,7 @@
 # exclude build files
 dist/
 
+*.gz
+*.br
+
+
